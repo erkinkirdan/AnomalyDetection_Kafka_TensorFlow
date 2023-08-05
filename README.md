@@ -10,7 +10,7 @@ It demonstrates a streaming data pipeline using Apache Kafka and TensorFlow.
 [Download](https://kafka.apache.org/quickstart) the latest Kafka release and extract it.
 1. Start the ZooKeeper server: `bin/zookeeper-server-start.sh config/zookeeper.properties`
 2. Start the Kafka server: `bin/kafka-server-start.sh config/server.properties`
-3. Create the Kafka topic: `kafka-topics.sh --create --topic sensor_data --bootstrap-server localhost:9092`
+3. Create the Kafka topic: `bin/kafka-topics.sh --create --topic sensor_data --bootstrap-server localhost:9092`
 
 ### Python Modules
 
