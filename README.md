@@ -7,19 +7,19 @@ It demonstrates a streaming data pipeline using Apache Kafka and TensorFlow.
 
 ### Apache Kafka Setup
 
-    1. Download the latest Kafka release and extract it: `tar -xzf kafka_2.13-3.5.0.tgz`
-    2. Navigate into the Kafka directory: `cd kafka_2.13-3.5.0`
-    3. Start the ZooKeeper server: `bin/zookeeper-server-start.sh config/zookeeper.properties`
-    4. Start the Kafka server: `bin/kafka-server-start.sh config/server.properties`
-    5. Create the Kafka topic: `kafka-topics.sh --create --topic sensor_data --bootstrap-server localhost:9092`
+1. Download the latest Kafka release and extract it: `tar -xzf kafka_2.13-3.5.0.tgz`
+2. Navigate into the Kafka directory: `cd kafka_2.13-3.5.0`
+3. Start the ZooKeeper server: `bin/zookeeper-server-start.sh config/zookeeper.properties`
+4. Start the Kafka server: `bin/kafka-server-start.sh config/server.properties`
+5. Create the Kafka topic: `kafka-topics.sh --create --topic sensor_data --bootstrap-server localhost:9092`
 
 ### Python Modules
 
-    1. Clone the repository: `git clone https://github.com/erkinkirdan/AnomalyDetection_Kafka_TensorFlow.git`
-    2. Navigate into the cloned repository: `cd AnomalyDetection_Kafka_TensorFlow`
-    3. Create a virtual environment: `python -m venv env`
-    4. Activate the virtual environment: `source env/bin/activate`
-    5. Install the necessary Python modules using pip: `pip install tensorflow confluent-kafka sklearn matplotlib`
+1. Clone the repository: `git clone https://github.com/erkinkirdan/AnomalyDetection_Kafka_TensorFlow.git`
+2. Navigate into the cloned repository: `cd AnomalyDetection_Kafka_TensorFlow`
+3. Create a virtual environment: `python -m venv env`
+4. Activate the virtual environment: `source env/bin/activate`
+5. Install the necessary Python modules using pip: `pip install tensorflow confluent-kafka sklearn matplotlib`
 
 ## Running
 
