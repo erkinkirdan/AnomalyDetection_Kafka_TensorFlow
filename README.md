@@ -6,37 +6,25 @@ It demonstrates a streaming data pipeline using Apache Kafka and TensorFlow.
 
 ## Installation
 
-1. **Python Modules**
+1. **Apache Kafka Setup**
+    1. Download the latest Kafka release and extract it: `tar -xzf kafka_2.13-3.5.0.tgz`
+    2. Navigate into the Kafka directory: `cd kafka_2.13-3.5.0`
+    3. Start the ZooKeeper server: `bin/zookeeper-server-start.sh config/zookeeper.properties`
+    4. Start the Kafka server: `bin/kafka-server-start.sh config/server.properties`
+    5. Create the Kafka topic: `kafka-topics.sh --create --topic sensor_data --bootstrap-server localhost:9092`
 
-    Install the necessary Python modules using pip:
-
-    ```bash
-    pip install tensorflow confluent-kafka sklearn matplotlib
-    ```
-
-2. **Apache Kafka Setup**
-
-    Start the ZooKeeper and Kafka servers:
-
-    ```bash
-    # Start ZooKeeper
-    zookeeper-server-start.sh /usr/local/etc/kafka/zookeeper.properties
-
-    # Start Kafka
-    kafka-server-start.sh /usr/local/etc/kafka/server.properties
-    ```
-
-    Create the Kafka topic:
-
-    ```bash
-    kafka-topics.sh --create --topic sensor_data --bootstrap-server localhost:9092
-    ```
+2. **Python Modules**
+    1. Clone the repository: `git clone https://github.com/erkinkirdan/AnomalyDetection_Kafka_TensorFlow.git`
+    2. Navigate into the cloned repository: `cd AnomalyDetection_Kafka_TensorFlow`
+    3. Create a virtual environment: `python -m venv env`
+    4. Activate the virtual environment: `source env/bin/activate`
+    5. Install the necessary Python modules using pip: `pip install tensorflow confluent-kafka sklearn matplotlib`
 
 ## Running
 
 1. **Train the Anomaly Detection Model**
 
-    Run the `train.py` script to train the anomaly detection model and save it to disk. This script needs to be run only once, unless you want to retrain the model.
+    Run the `train.py` script to train the anomaly detection model and save it to disk. This script must be run only once unless you want to retrain the model.
 
     ```bash
     python train.py
@@ -44,7 +32,7 @@ It demonstrates a streaming data pipeline using Apache Kafka and TensorFlow.
 
 2. **Consume Sensor Data and Make Predictions**
 
-    Run the `consumer.py` script to start consuming the sensor data from Kafka and making predictions using the pre-trained model. The predictions will be written to a CSV file.
+    Run the `consumer.py` script to start consuming the sensor data from Kafka and making predictions using the pre-trained model. The predictions will be written in a CSV file.
 
     ```bash
     python consumer.py
@@ -52,7 +40,7 @@ It demonstrates a streaming data pipeline using Apache Kafka and TensorFlow.
 
 3. **Generate and Send Sensor Data**
 
-    In a separate terminal, run the `producer.py` script to start generating synthetic sensor data and sending it to a Kafka topic.
+    In a separate terminal, run the `producer.py` script to generate synthetic sensor data and send it to a Kafka topic.
 
     ```bash
     python producer.py
@@ -60,7 +48,7 @@ It demonstrates a streaming data pipeline using Apache Kafka and TensorFlow.
 
 4. **Evaluate the Model and Plot Latencies**
 
-    After running the `producer.py` and `consumer.py` scripts for a while, stop them by pressing Ctrl+C. Then, run the `eval.py` script to evaluate the performance of the anomaly detection model and plot the latencies.
+    After running the `producer.py` and `consumer.py` scripts, stop them by pressing Ctrl+C. Then, run the `eval.py` script to evaluate the performance of the anomaly detection model and plot the latencies.
 
     ```bash
     python eval.py
