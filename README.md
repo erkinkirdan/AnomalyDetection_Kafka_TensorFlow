@@ -25,8 +25,7 @@ It demonstrates a streaming data pipeline using Apache Kafka and TensorFlow.
 
 ### Train the Anomaly Detection Model
 
-Run the `train.py` script to train the anomaly detection model and save it to disk.
-This script must be run only once unless you want to retrain the model.
+Run the `train.py` script to train and save the anomaly detection model.
 
 ```bash
 python train.py
@@ -35,6 +34,7 @@ python train.py
 ### Consume Sensor Data and Make Predictions
 
 Run the `consumer.py` script to start consuming the sensor data from Kafka and making predictions using the pre-trained model.
+
 The predictions will be written in a CSV file.
 
 ```bash
@@ -52,6 +52,7 @@ python producer.py
 ### Evaluate the Model and Plot Latencies
 
 After running the `producer.py` and `consumer.py` scripts, stop them by pressing Ctrl+C.
+
 Then, run the `eval.py` script to evaluate the performance of the anomaly detection model and plot the latencies.
 
 ```bash
