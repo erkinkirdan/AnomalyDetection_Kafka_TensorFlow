@@ -7,8 +7,7 @@ It demonstrates a streaming data pipeline using Apache Kafka and TensorFlow.
 
 ### Apache Kafka Setup
 
-[Download](https://kafka.apache.org/quickstart) the latest Kafka release and extract it
-Navigate into the Kafka directory: `cd kafka_2.13-3.5.0`
+[Download](https://kafka.apache.org/quickstart) the latest Kafka release and extract it.
 1. Start the ZooKeeper server: `bin/zookeeper-server-start.sh config/zookeeper.properties`
 2. Start the Kafka server: `bin/kafka-server-start.sh config/server.properties`
 3. Create the Kafka topic: `kafka-topics.sh --create --topic sensor_data --bootstrap-server localhost:9092`
