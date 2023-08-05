@@ -1,6 +1,7 @@
 # Anomaly Detection with Kafka and TensorFlow
 
 This repository contains a set of scripts that generate synthetic sensor data, use a pre-trained TensorFlow model to detect anomalies in the data, and evaluate the model's performance.
+
 It demonstrates a streaming data pipeline using Apache Kafka and TensorFlow.
 
 ## Installation
