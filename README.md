@@ -19,7 +19,7 @@ It demonstrates a streaming data pipeline using Apache Kafka and TensorFlow.
 2. Navigate into the cloned repository: `cd AnomalyDetection_Kafka_TensorFlow`
 3. Create a virtual environment: `python3 -m venv env`
 4. Activate the virtual environment: `source env/bin/activate`
-5. Install the necessary Python modules using pip: `pip install tensorflow confluent-kafka sklearn matplotlib`
+5. Install the necessary Python modules using pip: `pip install tensorflow confluent-kafka sklearn scikit-learn matplotlib`
 
 ## Running
 
