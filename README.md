@@ -28,7 +28,7 @@ It demonstrates a streaming data pipeline using Apache Kafka and TensorFlow.
 Run the `train.py` script to train and save the anomaly detection model.
 
 ```bash
-python train.py
+python3 train.py
 ```
 
 ### Consume Sensor Data and Make Predictions
@@ -38,7 +38,7 @@ Run the `consumer.py` script to start consuming the sensor data from Kafka and m
 The predictions will be written in a CSV file.
 
 ```bash
-python consumer.py
+python3 consumer.py
 ```
 
 ### Generate and Send Sensor Data
@@ -46,7 +46,7 @@ python consumer.py
 Run the `producer.py` script in a separate terminal to generate synthetic sensor data and send it to a Kafka topic.
 
 ```bash
-python producer.py
+python3 producer.py
 ```
 
 ### Evaluate the Model and Plot Latencies
@@ -56,5 +56,5 @@ After running the `producer.py` and `consumer.py` scripts, stop them by pressing
 Then, run the `eval.py` script to evaluate the performance of the anomaly detection model and plot the latencies.
 
 ```bash
-python eval.py
+python3 eval.py
 ```
