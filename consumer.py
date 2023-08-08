@@ -1,7 +1,7 @@
 import csv
 import json
 import numpy as np
-import tensorflow as tf
+import tflite_runtime.interpreter as tflite
 from confluent_kafka import Consumer
 from datetime import datetime
 import os
@@ -17,7 +17,7 @@ means = params['means']
 stdevs = params['stdevs']
 
 # Load the TFLite model
-interpreter = tf.lite.Interpreter(model_path='anomaly_detection_model.tflite')
+interpreter = tflite.Interpreter(model_path='anomaly_detection_model.tflite')
 interpreter.allocate_tensors()
 
 # Get input and output tensors
