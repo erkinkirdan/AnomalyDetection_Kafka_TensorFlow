@@ -55,7 +55,7 @@ def eval_performance(pred_file):
 
     # Add a vertical line for the 50th percentile
     plt.axhline(y=0.5, color='r', linestyle='--', linewidth=2.0)
-    plt.text(0.9, 0.5, '50th Percentile', color='r', va='center', ha='left', backgroundcolor='w', fontweight='bold')
+    plt.text(0.9, 0.5, 'P50', color='r', va='center', ha='left', backgroundcolor='w', fontweight='bold')
 
     # Get the x values where the line crosses the cdf plots for 50th percentile
     x_stream_latency_50 = np.interp(0.5, cdf_stream_latency, stream_latency_sorted)
@@ -93,7 +93,7 @@ def eval_performance(pred_file):
     # 99th Percentile
     y_line_99 = 10 ** -2
     plt.axhline(y=y_line_99, color='r', linestyle='--', linewidth=2.0)
-    plt.text(0.9, y_line_99, '99th Percentile', color='r', va='center', ha='left', backgroundcolor='w', fontweight='bold')
+    plt.text(0.9, y_line_99, 'P99', color='r', va='center', ha='left', backgroundcolor='w', fontweight='bold')
     x_stream_latency_99 = np.interp(y_line_99, ccdf_stream_latency[::-1], stream_latency_sorted[::-1])
     x_prediction_latency_99 = np.interp(y_line_99, ccdf_prediction_latency[::-1], prediction_latency_sorted[::-1])
     x_total_latency_99 = np.interp(y_line_99, ccdf_total_latency[::-1], total_latency_sorted[::-1])
