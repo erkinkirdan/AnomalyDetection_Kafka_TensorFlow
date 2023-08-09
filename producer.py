@@ -26,7 +26,7 @@ try:
         producer.produce('sensor_data', message)
         producer.flush()
 
-        time.sleep(0.01)  # adjust the sleep time to control the rate of data generation
+        time.sleep(0.1)  # adjust the sleep time to control the rate of data generation
 
 except KeyboardInterrupt:
     print('Stopped.')
