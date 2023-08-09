@@ -107,29 +107,12 @@ def eval_performance(pred_file):
                  xytext=(30, 30), textcoords='offset points', fontweight='bold',
                  arrowprops=dict(arrowstyle="->"))
 
-    # 99.99th Percentile
-    y_line_9999 = 10 ** -4
-    plt.axhline(y=y_line_9999, color='r', linestyle='--', linewidth=2.0)
-    plt.text(0.9, y_line_9999, '99.99th Percentile', color='r', va='center', ha='right', backgroundcolor='w', fontweight='bold')
-    x_stream_latency_9999 = np.interp(y_line_9999, ccdf_stream_latency[::-1], stream_latency_sorted[::-1])
-    x_prediction_latency_9999 = np.interp(y_line_9999, ccdf_prediction_latency[::-1], prediction_latency_sorted[::-1])
-    x_total_latency_9999 = np.interp(y_line_9999, ccdf_total_latency[::-1], total_latency_sorted[::-1])
-    plt.annotate(f'{x_stream_latency_9999:.2f}', xy=(x_stream_latency_9999, y_line_9999), xycoords='data',
-                 xytext=(-30, -30), textcoords='offset points', fontweight='bold',
-                 arrowprops=dict(arrowstyle="->"))
-    plt.annotate(f'{x_prediction_latency_9999:.2f}', xy=(x_prediction_latency_9999, y_line_9999), xycoords='data',
-                 xytext=(30, 30), textcoords='offset points', fontweight='bold',
-                 arrowprops=dict(arrowstyle="->"))
-    plt.annotate(f'{x_total_latency_9999:.2f}', xy=(x_total_latency_9999, y_line_9999), xycoords='data',
-                 xytext=(30, 30), textcoords='offset points', fontweight='bold',
-                 arrowprops=dict(arrowstyle="->"))
-
     plt.title('CCDF of Latencies', fontweight='bold')
     plt.xlabel('Latency (ms)', fontweight='bold')
     plt.ylabel('CCDF', fontweight='bold')
     plt.grid(True)
     plt.legend()
-    plt.savefig('Latency.pdf')
+    plt.savefig('Latency_CCDF.pdf')
 
 if __name__ == "__main__":
     eval_performance("labels.csv")
