@@ -4,6 +4,8 @@ import numpy as np
 from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix, accuracy_score
 from dateutil.parser import parse
 import matplotlib as mpl
+from scipy.stats import sem
+from scipy.stats import t
 
 mpl.rcParams['font.weight'] = 'bold'  # Make all text bold
 mpl.rcParams['font.size'] = 12  # Increase font size
@@ -36,6 +38,14 @@ def eval_performance(pred_file):
     stream_latency = [(parse(row[6]) - parse(row[5])).total_seconds() * 1000 for row in pred_data[1:]]  # Skip the header row
     prediction_latency = [(parse(row[7]) - parse(row[6])).total_seconds() * 1000 for row in pred_data[1:]]  # Skip the header row
     total_latency = [(parse(row[7]) - parse(row[5])).total_seconds() * 1000 for row in pred_data[1:]]  # Skip the header row
+
+    for latency_name, latencies in zip(["Stream Latency", "Prediction Latency", "Total Latency"],
+                                       [stream_latency, prediction_latency, total_latency]):
+        mean = np.mean(latencies)
+        standard_error = sem(latencies)
+        confidence_interval = t.ppf((1 + 0.95) / 2, len(latencies) - 1) * standard_error
+
+        print(f"{latency_name}: ({mean - confidence_interval}, {mean + confidence_interval})")
 
     stream_latency_sorted = np.sort(stream_latency)
     prediction_latency_sorted = np.sort(prediction_latency)
