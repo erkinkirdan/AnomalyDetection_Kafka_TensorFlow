@@ -6,86 +6,77 @@ from confluent_kafka import Consumer
 from datetime import datetime
 import os
 
-# Check if the CSV file exists, if so, delete it
-if os.path.exists('labels.csv'):
-    os.remove('labels.csv')
+def check_remove_file(file_path):
+    if os.path.exists(file_path):
+        os.remove(file_path)
 
-# Load the standardization parameters
-with open('standardization_params.json', 'r') as f:
-    params = json.load(f)
-means = params['means']
-stdevs = params['stdevs']
+def load_params(file_name):
+    with open(file_name, 'r') as f:
+        return json.load(f)
 
-# Load the TFLite model
-interpreter = tflite.Interpreter(model_path='anomaly_detection_model.tflite')
-interpreter.allocate_tensors()
+def load_model(model_path):
+    interpreter = tflite.Interpreter(model_path=model_path)
+    interpreter.allocate_tensors()
+    return interpreter
 
-# Get input and output tensors
-input_details = interpreter.get_input_details()
-output_details = interpreter.get_output_details()
+def kafka_config(servers, group_id):
+    return Consumer({'bootstrap.servers': servers, 'group.id': group_id})
 
-# Hardcoded normal ranges
-normal_ranges = {
-    'Temperature1': (1, 46),
-    'Temperature2': (4, 49),
-    'Humidity': (0, 90)
-}
+def write_csv_header(file_name, header):
+    with open(file_name, 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(header)
 
-# Kafka configuration
-conf = {'bootstrap.servers': 'localhost:9092', 'group.id': 'group1'}
-consumer = Consumer(conf)
-consumer.subscribe(['sensor_data'])
+def standardize_data(sensor_data, means, stdevs):
+    return np.array([(sensor_data[i] - means[i]) / stdevs[i] for i in range(len(sensor_data))], dtype=np.float32).reshape(1, -1)
 
-# CSV file setup
-with open('labels.csv', 'w', newline='') as file:
-    writer = csv.writer(file)
-    writer.writerow(["Temperature1", "Temperature2", "Humidity", "Predicted_Label", "True_Label", "Timestamp", "Kafka_Timestamp", "Prediction_Timestamp"])
+def is_anomaly(sensor_data, normal_ranges):
+    return 1 if any(sensor_data[key] < normal_ranges[key][0] or sensor_data[key] > normal_ranges[key][1] for key in normal_ranges) else 0
 
-try:
-    while True:
-        msg = consumer.poll(0)
-        if msg is None:
-            continue
-        if msg.error():
-            raise Exception(msg.error())
-        else:
-            # Get the Kafka timestamp
+def main():
+    check_remove_file('labels.csv')
+
+    params = load_params('standardization_params.json')
+    means, stdevs = params['means'], params['stdevs']
+    interpreter = load_model('anomaly_detection_model.tflite')
+    input_details, output_details = interpreter.get_input_details(), interpreter.get_output_details()
+
+    normal_ranges = {
+        'Temperature1': (1, 46),
+        'Temperature2': (4, 49),
+        'Humidity': (0, 90)
+    }
+
+    consumer = kafka_config('localhost:9092', 'group1')
+    consumer.subscribe(['sensor_data'])
+    write_csv_header('labels.csv', ["Temperature1", "Temperature2", "Humidity", "Predicted_Label", "True_Label", "Timestamp", "Kafka_Timestamp", "Prediction_Timestamp"])
+
+    try:
+        while True:
+            msg = consumer.poll(0)
+            if msg is None:
+                continue
+            if msg.error():
+                raise Exception(msg.error())
+
             kafka_timestamp = datetime.now().isoformat()
-
-            # Get the message value and convert it to a dictionary
             sensor_data = json.loads(msg.value().decode('utf-8'))
-
-            # Extract and standardize the sensor data
-            data = [sensor_data['Temperature1'], sensor_data['Temperature2'], sensor_data['Humidity']]
-            data = [(data[i] - means[i]) / stdevs[i] for i in range(len(data))]
-            data = np.array(data, dtype=np.float32).reshape(1, -1)
-
-            # Set the value of the input tensor
+            data = standardize_data([sensor_data['Temperature1'], sensor_data['Temperature2'], sensor_data['Humidity']], means, stdevs)
             interpreter.set_tensor(input_details[0]['index'], data)
-            # Run the inference
             interpreter.invoke()
-            # Retrieve the output of the model
             output = interpreter.get_tensor(output_details[0]['index'])
-            # Get prediction timestamp
             prediction_timestamp = datetime.now().isoformat()
+            true_label = is_anomaly(sensor_data, normal_ranges)
 
-            # Determine if the data point is an anomaly
-            true_label = (sensor_data['Temperature1'] < normal_ranges['Temperature1'][0] or
-                          sensor_data['Temperature1'] > normal_ranges['Temperature1'][1] or
-                          sensor_data['Temperature2'] < normal_ranges['Temperature2'][0] or
-                          sensor_data['Temperature2'] > normal_ranges['Temperature2'][1] or
-                          sensor_data['Humidity'] < normal_ranges['Humidity'][0] or
-                          sensor_data['Humidity'] > normal_ranges['Humidity'][1])
-            true_label = 1 if true_label else 0
-
-            # Write sensor data, labels and timestamps to CSV
             with open('labels.csv', 'a', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow([sensor_data['Temperature1'], sensor_data['Temperature2'], sensor_data['Humidity'],
                                  int(output[0][0] > 0.5), true_label, sensor_data['Timestamp'], kafka_timestamp, prediction_timestamp])
 
-except KeyboardInterrupt:
-    print('Stopped.')
-finally:
-    # Close down consumer to commit final offsets
-    consumer.close()
+    except KeyboardInterrupt:
+        print('Stopped.')
+    finally:
+        consumer.close()
+
+if __name__ == "__main__":
+    main()
