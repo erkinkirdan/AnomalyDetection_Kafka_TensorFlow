@@ -4,29 +4,35 @@ import time
 from confluent_kafka import Producer
 from datetime import datetime
 
-# Kafka configuration
-conf = {'bootstrap.servers': 'localhost:9092'}
-producer = Producer(conf)
+def generate_sensor_data():
+    """Generate random sensor data for temperatures and humidity."""
+    temp1 = random.uniform(0, 50)
+    temp2 = random.uniform(0, 50)
+    humidity = random.uniform(0, 100)
+    timestamp = datetime.now().isoformat()
 
-try:
-    while True:
-        # Generate random sensor data
-        temp1 = random.uniform(0, 50)
-        temp2 = random.uniform(0, 50)
-        humidity = random.uniform(0, 100)
-        timestamp = datetime.now().isoformat()
+    return {
+        'Temperature1': temp1,
+        'Temperature2': temp2,
+        'Humidity': humidity,
+        'Timestamp': timestamp
+    }
 
-        # Produce and send message to Kafka
-        message = json.dumps({
-            'Temperature1': temp1,
-            'Temperature2': temp2,
-            'Humidity': humidity,
-            'Timestamp': timestamp
-        })
-        producer.produce('sensor_data', message)
-        producer.flush()
+def main():
+    # Kafka configuration
+    conf = {'bootstrap.servers': 'localhost:9092'}
+    producer = Producer(conf)
 
-        time.sleep(0.1)  # adjust the sleep time to control the rate of data generation
+    try:
+        while True:
+            # Generate and send sensor data to Kafka
+            message = json.dumps(generate_sensor_data())
+            producer.produce('sensor_data', message)
+            producer.flush()
+            time.sleep(0.1)  # adjust sleep time to control data generation rate
 
-except KeyboardInterrupt:
-    print('Stopped.')
+    except KeyboardInterrupt:
+        print('Stopped.')
+
+if __name__ == '__main__':
+    main()
